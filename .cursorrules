@@ -1,0 +1,9 @@
+- Use React Native with Expo
+- Use TypeScript
+- Use Supabase or Firebase for backend
+- Follow clean architecture and multi-tenancy for SaaS
+- All estimates must be real-time, timestamped, with confidence factors
+- Include flyovers, AI Vision, LLM Chat, Automatic Deal Scanner with LLM scoring
+- Implement full security best practices and feature gating from PRD v2.0
+- Use Tailwind or NativeWind for styling
+- Enforce subscription checks on all paid features
