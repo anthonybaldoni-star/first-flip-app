@@ -1,7 +1,6 @@
 import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
-  Image,
   Linking,
   Pressable,
   ScrollView,
@@ -14,6 +13,7 @@ import * as Clipboard from "expo-clipboard";
 import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { HeaderQuickLinks } from "../components/HeaderQuickLinks";
+import { ListingPhotoThumb } from "../components/ListingPhotoThumb";
 import { CompRadiusMap } from "../components/CompRadiusMap";
 import { PropertyMiniMap } from "../components/PropertyMiniMap";
 import { PropertyMapLinks } from "../components/PropertyMapLinks";
@@ -70,6 +70,10 @@ export default function PropertyIntakeScreen() {
 
   const pasteUrlFromClipboard = async () => {
     try {
+      if (typeof Clipboard.hasStringAsync === "function") {
+        const has = await Clipboard.hasStringAsync();
+        if (!has) return;
+      }
       const text = await Clipboard.getStringAsync();
       const line = text?.trim().split(/\r?\n/)[0]?.trim();
       if (line) {
@@ -207,7 +211,12 @@ export default function PropertyIntakeScreen() {
                 radiusMiles={DEFAULT_COMP_RADIUS_MILES}
               />
             </>
-          ) : null}
+          ) : (
+            <Text className="mt-3 rounded-lg bg-amber-950/40 px-3 py-2 text-xs leading-5 text-amber-200">
+              Embedded map preview needs coordinates — tap Parse listing again after an app update, or paste a
+              fresh URL.
+            </Text>
+          )}
           <PropertyMapLinks address={parsed.fullAddress} />
 
           <Pressable
@@ -222,7 +231,7 @@ export default function PropertyIntakeScreen() {
           <Text className="mb-2 mt-6 font-semibold text-slate-400">Listing photos (demo)</Text>
           <View className="flex-row flex-wrap gap-2">
             {parsed.photoUrls.map((uri) => (
-              <Image key={uri} source={{ uri }} className="h-24 w-[31%] rounded-lg bg-slate-800" />
+              <ListingPhotoThumb key={uri} uri={uri} />
             ))}
           </View>
 

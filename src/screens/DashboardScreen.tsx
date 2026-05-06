@@ -26,6 +26,7 @@ import {
 import { runAutomaticScanAsync, type ScannedDeal } from "../lib/dealScanner";
 import {
   canSeeLlmScoredDeals,
+  canUseDealScanner,
   canUseUnlimitedComps,
   maxCompsForTier,
   maxSensitivityRowsForTier,
@@ -94,7 +95,7 @@ const DashboardScreen = () => {
   };
 
   const handleScannerTap = () => {
-    if (tier === "free") {
+    if (!canUseDealScanner(tier)) {
       openPaywall("Unlock geography-based scans and LLM-ranked deals.");
     } else {
       router.push("/scanner");

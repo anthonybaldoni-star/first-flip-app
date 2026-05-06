@@ -65,6 +65,13 @@ export async function parseListingUrl(rawInput: string): Promise<ParsedListing> 
   else if (host.includes("compass")) sourceLabel = "Compass";
   else if (host.includes("har")) sourceLabel = "HAR.com";
   else if (host.includes("mls")) sourceLabel = "MLS listing";
+  else if (host.includes("opendoor")) sourceLabel = "Opendoor";
+  else if (host.includes("streeteasy")) sourceLabel = "StreetEasy";
+  else if (host.includes("movoto")) sourceLabel = "Movoto";
+  else if (host.includes("coldwell")) sourceLabel = "Coldwell Banker";
+  else if (host.includes("century21")) sourceLabel = "Century 21";
+  else if (host.includes("kw.com")) sourceLabel = "KW / Keller Williams";
+  else if (host.includes("exprealty")) sourceLabel = "eXp Realty";
 
   const streets = [
     "742 Evergreen Terrace",

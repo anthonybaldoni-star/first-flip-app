@@ -56,7 +56,9 @@ export default function TabLayout() {
         name="scanner"
         options={{
           title: "Scanner",
-          tabBarIcon: ({ color, size }) => <Ionicons name="radar-outline" size={size} color={color} />,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="compass-outline" size={size} color={color} />
+          ),
         }}
       />
       <Tabs.Screen

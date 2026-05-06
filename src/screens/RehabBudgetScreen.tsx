@@ -219,6 +219,29 @@ export default function RehabBudgetScreen() {
         </Text>
       </View>
 
+      {orphansOnFreeTier ? (
+        <View className="mb-6 rounded-xl border border-amber-800/45 bg-amber-950/40 p-4">
+          <Text className="text-sm font-semibold text-amber-200">
+            Budget includes locked categories on Free tier
+          </Text>
+          <Text className="mt-2 text-xs leading-5 text-slate-400">
+            {orphansOnFreeTier.count} line item
+            {orphansOnFreeTier.count === 1 ? "" : "s"} (~$
+            {orphansOnFreeTier.sumIndexed.toLocaleString()} indexed) live in categories not editable on Free
+            {orphansOnFreeTier.labels.length
+              ? ` (e.g. ${orphansOnFreeTier.labels.slice(0, 4).join(", ")}${orphansOnFreeTier.labels.length > 4 ? ", …" : ""})`
+              : ""}
+            . That amount is reflected in your total above. Upgrade to reveal and edit them here.
+          </Text>
+          <Pressable
+            onPress={() => openPaywall("Unlock all rehab categories to edit lines saved outside the Free category set.")}
+            className="mt-3 rounded-lg bg-slate-800 py-2 active:opacity-90"
+          >
+            <Text className="text-center text-sm font-semibold text-sky-400">Unlock full rehab tracker — Pro</Text>
+          </Pressable>
+        </View>
+      ) : null}
+
       {visibleCategories.map((cat) => {
         const catItems = items.filter((i) => i.categoryId === cat.id);
         return (

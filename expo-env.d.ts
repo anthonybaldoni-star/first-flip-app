@@ -1,8 +1,3 @@
 /// <reference types="expo/types" />
 
-declare namespace NodeJS {
-  interface ProcessEnv {
-    EXPO_PUBLIC_OPENAI_API_KEY?: string;
-    EXPO_PUBLIC_OPENAI_MODEL?: string;
-  }
-}
+// NOTE: This file should not be edited and should be in your git ignore

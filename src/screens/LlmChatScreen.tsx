@@ -81,6 +81,7 @@ export default function LlmChatScreen() {
     },
   ]);
   const [showPaywall, setShowPaywall] = useState(false);
+  const [paywallReason, setPaywallReason] = useState<string | undefined>(undefined);
 
   const userTurns = useMemo(() => messages.filter((m) => m.role === "user").length, [messages]);
   const remainingFree = Math.max(0, maxFreeChatTurns() - userTurns);
@@ -90,6 +91,7 @@ export default function LlmChatScreen() {
     if (!clean.trim()) return;
 
     if (!canUseFullLlmChat(tier) && userTurns >= maxFreeChatTurns()) {
+      setPaywallReason("You've used all free-tier questions — upgrade for unlimited contextual chat.");
       setShowPaywall(true);
       return;
     }
@@ -136,7 +138,10 @@ export default function LlmChatScreen() {
               Free tier: {maxFreeChatTurns()} questions total · {remainingFree} remaining
             </Text>
             <Pressable
-              onPress={() => setShowPaywall(true)}
+              onPress={() => {
+                setPaywallReason(undefined);
+                setShowPaywall(true);
+              }}
               className="mt-3 rounded-xl border border-amber-600/50 bg-amber-950/40 py-2 active:opacity-90"
             >
               <Text className="text-center text-sm font-semibold text-amber-200">
@@ -190,8 +195,11 @@ export default function LlmChatScreen() {
       </View>
       <PaywallModal
         visible={showPaywall}
-        onClose={() => setShowPaywall(false)}
-        reason="Unlock unlimited in-app LLM chat with Pro."
+        onClose={() => {
+          setShowPaywall(false);
+          setPaywallReason(undefined);
+        }}
+        reason={paywallReason ?? "Unlock unlimited in-app LLM chat with Pro."}
       />
     </KeyboardAvoidingView>
   );

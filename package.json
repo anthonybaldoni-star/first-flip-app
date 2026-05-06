@@ -12,12 +12,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "2.1.2",
     "@expo/vector-icons": "^14.0.4",
+    "@react-native-async-storage/async-storage": "2.1.2",
     "@react-navigation/native": "^7.0.14",
     "@supabase/supabase-js": "^2.49.1",
     "expo": "~52.0.0",
-    "expo-clipboard": "~7.0.0",
+    "expo-clipboard": "~7.0.1",
     "expo-constants": "~17.0.5",
     "expo-image-picker": "~16.0.6",
     "expo-linking": "~7.0.4",

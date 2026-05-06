@@ -1,5 +1,5 @@
 import React from "react";
-import { Linking, Pressable, Text, View } from "react-native";
+import { Linking, Platform, Pressable, Text, View } from "react-native";
 import * as Location from "expo-location";
 
 type Props = {
@@ -15,6 +15,12 @@ export function PropertyMapLinks({ address, disabled }: Props) {
     if (!trimmed || disabled) return;
     const q = encodeURIComponent(trimmed);
     void Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${q}`);
+  };
+
+  const openAppleMaps = () => {
+    if (!trimmed || disabled) return;
+    const q = encodeURIComponent(trimmed);
+    void Linking.openURL(`http://maps.apple.com/?q=${q}&dirflg=d`);
   };
 
   const openDirections = async () => {
@@ -37,21 +43,38 @@ export function PropertyMapLinks({ address, disabled }: Props) {
   };
 
   return (
-    <View className="mt-3 flex-row gap-2">
-      <Pressable
-        onPress={openPin}
-        disabled={!trimmed || disabled}
-        className={`flex-1 rounded-xl py-3 ${!trimmed || disabled ? "bg-slate-900" : "bg-slate-800 active:opacity-90"}`}
-      >
-        <Text className="text-center text-sm font-semibold text-sky-400">Pin in Maps</Text>
-      </Pressable>
-      <Pressable
-        onPress={openDirections}
-        disabled={!trimmed || disabled}
-        className={`flex-1 rounded-xl py-3 ${!trimmed || disabled ? "bg-slate-900" : "bg-slate-800 active:opacity-90"}`}
-      >
-        <Text className="text-center text-sm font-semibold text-sky-400">Directions</Text>
-      </Pressable>
+    <View className="mt-3 gap-2">
+      <View className="flex-row gap-2">
+        <Pressable
+          onPress={openPin}
+          disabled={!trimmed || disabled}
+          accessibilityRole="button"
+          accessibilityLabel="Open listing location in Google Maps"
+          className={`flex-1 rounded-xl py-3 ${!trimmed || disabled ? "bg-slate-900" : "bg-slate-800 active:opacity-90"}`}
+        >
+          <Text className="text-center text-sm font-semibold text-sky-400">Google · Pin</Text>
+        </Pressable>
+        <Pressable
+          onPress={openDirections}
+          disabled={!trimmed || disabled}
+          accessibilityRole="button"
+          accessibilityLabel="Driving directions to listing in Google Maps"
+          className={`flex-1 rounded-xl py-3 ${!trimmed || disabled ? "bg-slate-900" : "bg-slate-800 active:opacity-90"}`}
+        >
+          <Text className="text-center text-sm font-semibold text-sky-400">Google · Directions</Text>
+        </Pressable>
+      </View>
+      {Platform.OS === "ios" && (
+        <Pressable
+          onPress={openAppleMaps}
+          disabled={!trimmed || disabled}
+          accessibilityRole="button"
+          accessibilityLabel="Open in Apple Maps"
+          className={`rounded-xl py-3 ${!trimmed || disabled ? "bg-slate-900" : "bg-slate-800 active:opacity-90"}`}
+        >
+          <Text className="text-center text-sm font-semibold text-slate-400">Apple Maps · Directions</Text>
+        </Pressable>
+      )}
     </View>
   );
 }

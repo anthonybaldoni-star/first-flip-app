@@ -23,7 +23,7 @@ const LINKS: {
   { key: "deals", href: "/deals", icon: "star-outline", label: "Recommended Deals" },
   { key: "visit-log", href: "/visit-log", icon: "walk-outline", label: "Visit Log" },
   { key: "chat", href: "/chat", icon: "chatbubbles-outline", label: "LLM Chat" },
-  { key: "scanner", href: "/scanner", icon: "radar-outline", label: "Deal Scanner" },
+  { key: "scanner", href: "/scanner", icon: "compass-outline", label: "Deal Scanner" },
   { key: "rehab", href: "/rehab", icon: "construct-outline", label: "Rehab Budget" },
 ];
 

@@ -19,7 +19,10 @@ import {
   notifyScanComplete,
   scheduleDailyDealDigest,
 } from "../lib/dealScanNotifications";
-import { canReceiveDealPushNotifications } from "../lib/featureGating";
+import {
+  canReceiveDealPushNotifications,
+  canUseDealScanner,
+} from "../lib/featureGating";
 import { formatEstimateTimestamp } from "../lib/propertyEstimate";
 
 const PREFS_KEY = "firstflip_scanner_notify_prefs";
@@ -47,7 +50,7 @@ export default function DealScannerScreen() {
 
   /** Region changes reload at nonce 0; manual “Run new scan” bumps nonce inside `runNewScan` only (no duplicate fetch). */
   useEffect(() => {
-    if (tier === "free") return;
+    if (!canUseDealScanner(tier)) return;
     let cancelled = false;
     setScanBusy(true);
     setDeals([]);
@@ -81,7 +84,7 @@ export default function DealScannerScreen() {
   }, []);
 
   useEffect(() => {
-    if (!prefsLoaded || tier === "free") return;
+    if (!prefsLoaded || !canUseDealScanner(tier)) return;
     void scheduleDailyDealDigest(prefs.dailyDigest);
   }, [prefsLoaded, prefs.dailyDigest, tier]);
 
@@ -95,7 +98,7 @@ export default function DealScannerScreen() {
   };
 
   const runNewScan = async () => {
-    if (tier === "free") {
+    if (!canUseDealScanner(tier)) {
       setShowPaywall(true);
       return;
     }
@@ -122,7 +125,7 @@ export default function DealScannerScreen() {
   };
 
   const onToggleInstant = async (value: boolean) => {
-    if (tier === "free") {
+    if (!canUseDealScanner(tier)) {
       setShowPaywall(true);
       return;
     }
@@ -134,7 +137,7 @@ export default function DealScannerScreen() {
   };
 
   const onToggleDigest = async (value: boolean) => {
-    if (tier === "free") {
+    if (!canUseDealScanner(tier)) {
       setShowPaywall(true);
       return;
     }
@@ -155,7 +158,7 @@ export default function DealScannerScreen() {
     );
   }
 
-  if (tier === "free") {
+  if (!canUseDealScanner(tier)) {
     return (
       <ScrollView className="flex-1 bg-slate-950 px-4 pt-4" contentContainerStyle={{ paddingBottom: 40 }}>
         <Text className="mb-4 text-2xl font-bold text-white">Deal Scanner</Text>

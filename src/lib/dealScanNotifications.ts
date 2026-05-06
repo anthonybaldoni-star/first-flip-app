@@ -1,5 +1,4 @@
 import { Platform } from "react-native";
-import * as Notifications from "expo-notifications";
 import type { ScannedDeal } from "./dealScanner";
 
 /**
@@ -8,8 +7,25 @@ import type { ScannedDeal } from "./dealScanner";
 
 const ANDROID_CHANNEL = "deal-scan";
 
+type NotificationsModule = typeof import("expo-notifications");
+
+/**
+ * Web safety: avoid evaluating expo-notifications at module import time.
+ * Some web runtimes surface storage-related errors if this module is eagerly loaded.
+ */
+async function getNotifications(): Promise<NotificationsModule | null> {
+  if (Platform.OS === "web") return null;
+  try {
+    return await import("expo-notifications");
+  } catch {
+    return null;
+  }
+}
+
 export async function ensureAndroidChannel(): Promise<void> {
   if (Platform.OS !== "android") return;
+  const Notifications = await getNotifications();
+  if (!Notifications) return;
   try {
     await Notifications.setNotificationChannelAsync(ANDROID_CHANNEL, {
       name: "Deal scan alerts",
@@ -22,6 +38,8 @@ export async function ensureAndroidChannel(): Promise<void> {
 
 export async function requestDealAlertPermissions(): Promise<boolean> {
   if (Platform.OS === "web") return false;
+  const Notifications = await getNotifications();
+  if (!Notifications) return false;
   try {
     await ensureAndroidChannel();
     const { status: existing } = await Notifications.getPermissionsAsync();
@@ -38,6 +56,8 @@ export async function requestDealAlertPermissions(): Promise<boolean> {
 
 export async function notifyScanComplete(topDeal: ScannedDeal): Promise<void> {
   if (Platform.OS === "web") return;
+  const Notifications = await getNotifications();
+  if (!Notifications) return;
   try {
     await ensureAndroidChannel();
     await Notifications.scheduleNotificationAsync({
@@ -62,6 +82,8 @@ let digestNotificationId: string | null = null;
 /** Daily local reminder for Pro — replace with server-driven push in production. */
 export async function scheduleDailyDealDigest(enabled: boolean): Promise<void> {
   if (Platform.OS === "web") return;
+  const Notifications = await getNotifications();
+  if (!Notifications) return;
   try {
     await ensureAndroidChannel();
 
