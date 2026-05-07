@@ -48,6 +48,9 @@ export default function RehabBudgetScreen() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [paywallReason, setPaywallReason] = useState<string | undefined>(undefined);
 
+  /** Alias for memo deps / orphan logic — same reference as `items`. */
+  const lineItems = items;
+
   const rehabPhotosUsed = useMemo(() => items.filter((i) => !!i.photoUri).length, [items]);
 
   const openPaywall = (reason?: string) => {
@@ -93,6 +96,22 @@ export default function RehabBudgetScreen() {
     (amount: number) => applyCostIndex(amount, regionKey, tier),
     [regionKey, tier],
   );
+
+  const orphansOnFreeTier = useMemo(() => {
+    if (tier !== "free") return null;
+    const allowedIds = new Set(visibleCategories.map((c) => c.id));
+    const orphans = lineItems.filter((li) => !allowedIds.has(li.categoryId));
+    if (orphans.length === 0) return null;
+    const sumIndexed = orphans.reduce(
+      (sum, li) => sum + applyCostIndex(li.amount, regionKey, tier),
+      0,
+    );
+    const labelById = new Map(REHAB_CATEGORIES.map((c) => [c.id, c.label]));
+    const labels = [
+      ...new Set(orphans.map((li) => labelById.get(li.categoryId) ?? li.categoryId)),
+    ];
+    return { count: orphans.length, sumIndexed, labels };
+  }, [tier, lineItems, visibleCategories, regionKey]);
 
   const totalIndexed = useMemo(() => {
     return items.reduce((sum, li) => sum + displayAmount(li.amount), 0);
@@ -219,7 +238,7 @@ export default function RehabBudgetScreen() {
         </Text>
       </View>
 
-      {orphansOnFreeTier ? (
+      {orphansOnFreeTier != null && orphansOnFreeTier.count > 0 ? (
         <View className="mb-6 rounded-xl border border-amber-800/45 bg-amber-950/40 p-4">
           <Text className="text-sm font-semibold text-amber-200">
             Budget includes locked categories on Free tier

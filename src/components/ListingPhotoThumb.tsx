@@ -7,7 +7,7 @@ export function ListingPhotoThumb({ uri }: { uri: string }) {
 
   if (failed) {
     return (
-      <View className="h-24 w-[31%] items-center justify-center rounded-lg bg-slate-800 px-1">
+      <View className="h-24 w-full items-center justify-center rounded-lg bg-slate-800 px-1">
         <Text className="text-center text-xs text-slate-500">Image unavailable</Text>
       </View>
     );
@@ -17,7 +17,7 @@ export function ListingPhotoThumb({ uri }: { uri: string }) {
     <Image
       source={{ uri }}
       accessibilityLabel="Listing photo"
-      className="h-24 w-[31%] rounded-lg bg-slate-800"
+      className="h-24 w-full rounded-lg bg-slate-800"
       resizeMode="cover"
       onError={() => setFailed(true)}
     />

@@ -229,9 +229,16 @@ export default function PropertyIntakeScreen() {
           </Pressable>
 
           <Text className="mb-2 mt-6 font-semibold text-slate-400">Listing photos (demo)</Text>
-          <View className="flex-row flex-wrap gap-2">
-            {parsed.photoUrls.map((uri) => (
-              <ListingPhotoThumb key={uri} uri={uri} />
+          <View className="flex-row flex-wrap gap-x-2 gap-y-3">
+            {parsed.photoUrls.map((uri, i) => (
+              <View key={uri} className="w-[31%]">
+                <ListingPhotoThumb uri={uri} />
+                {parsed.photoLabels?.[i] ? (
+                  <Text className="mt-1 text-[10px] leading-3 text-slate-500" numberOfLines={3}>
+                    {parsed.photoLabels[i]}
+                  </Text>
+                ) : null}
+              </View>
             ))}
           </View>
 
